@@ -1,0 +1,2 @@
+PyInquirer
+boto3
