@@ -1,2 +1,4 @@
 PyInquirer
 boto3
+twine
+pycodestyle

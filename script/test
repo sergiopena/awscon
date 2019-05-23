@@ -1,0 +1,9 @@
+#!/bin/bash
+
+STYLE_ERRORS=$(pycodestyle .| wc -l | sed -e 's/[[:space:]]*//')
+
+if [[ $STYLE_ERRORS -gt 0 ]]; then
+  pycodestyle .
+  echo "pycodestyle errors"
+  exit 1
+fi

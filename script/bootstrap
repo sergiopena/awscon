@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export PROJECT_ROOT=$(dirname $(git rev-parse --git-dir))
+
+pip install --upgrade pip 
+pip install --upgrade
+pip install -r $PROJECT_ROOT/awscon/requirements.txt

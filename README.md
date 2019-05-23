@@ -1,37 +1,53 @@
 ## AWSCON
-Wrapper that displays all available EC2 instances and launchs an SSM console session for the selected one
+Connect to SSM console of any deployed instance.
 
-## Motivation
-I have been switching around EC2 console and AWS SSM session copy-pasting instance ids so I needed a wrapper that ease connection to EC2 instances
+<img src="demo.gif" witdh="700">
 
-## Build status
-Build status of continus integration i.e. travis, appveyor etc. Ex. - 
+## Prereqs
+Setup your profiles using the aws cli
 
-[![Build Status](https://travis-ci.org/akashnimare/foco.svg?branch=master)](https://travis-ci.org/akashnimare/foco)
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/akashnimare/foco?branch=master&svg=true)](https://ci.appveyor.com/project/akashnimare/foco/branch/master)
+```sh
+aws configure --profile PROFILE_NAME
+```
 
-## Code style
-PEP8 Compliant
+You can also leave out the `--profile PROFILE_NAME` param to set your `default` credentials
 
- 
-## Screenshots
-Include logo/demo screenshot etc.
+Refer to this doc for more information
+https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
-## Installation
-TODO
+Recommend to use [awsp](https://github.com/johnnyopao/awsp) to manage AWS profiles 
+## Setup
+
+### pip
+```
+pip install awscon
+```
+### source
+ ```
+ git clone git@github.com:sergiopena/awscon.git
+ cd awscon
+ python setup.py install
+ ```
 
 ## Tests
 No test at the moment... SHAME!
 
 ## How to use?
-If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
+* An exported env var named AWS_PROFILE is required, as this is the profile that will be used to retrieve running ec2 instances
+* Profile must include the region, currently we only support one region.
+* Run `awscon` it will retrieve your EC2 running instances and display a menu to connect to them.
 
 ## Contribute
 Contributions are more than welcomed!
 
-## Credits
-Inspired by the AWS profile switcher.
-[awsp]()
+## Distribute
+```
+python setup.py sdist bdist_wheel
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+twine upload dist/*
+```
 
+## Credits
+Inspired by the AWS profile switcher [awsp](https://github.com/johnnyopao/awsp) 
 ## License
 BSD
