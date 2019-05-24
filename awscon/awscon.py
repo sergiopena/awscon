@@ -8,6 +8,8 @@ import sys
 import subprocess
 
 
+import code
+
 def get_instances():
     ec2_instances = []
 
@@ -42,7 +44,11 @@ def get_instances():
         else:
             publicAddress = ''
 
-        privateAddress = instance['PrivateIpAddress']
+	if 'PrivateIpAddress' in instance:
+	    privateAddress = instance['PrivateIpAddress']
+	else:
+	    privateAddress = ''
+
         entry = "%s - %s - %s - %s " % (instanceId,
                                         '{:<15}'.format(publicAddress),
                                         '{:<15}'.format(privateAddress),
