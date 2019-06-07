@@ -68,21 +68,8 @@ def get_instances(args):
     return ec2_instances
 
 
-def main(args):
-    prompt_list = [
-      {
-        'type': 'list',
-        'name': 'instance',
-        'message': 'Select instance to connect',
-        'choices': get_instances(args)
-      }]
+def main():
 
-    answers = prompt(prompt_list, style=custom_style_2)
-    instanceId = answers['instance'].split(' - ')[0]
-    subprocess.call(["aws", "ssm", "start-session", "--target", instanceId])
-
-
-if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='AWS SSM console manager',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
@@ -100,4 +87,18 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    main(args)
+    prompt_list = [
+      {
+        'type': 'list',
+        'name': 'instance',
+        'message': 'Select instance to connect',
+        'choices': get_instances(args)
+      }]
+
+    answers = prompt(prompt_list, style=custom_style_2)
+    instanceId = answers['instance'].split(' - ')[0]
+    subprocess.call(["aws", "ssm", "start-session", "--target", instanceId])
+
+
+if __name__ == '__main__':
+    main()
