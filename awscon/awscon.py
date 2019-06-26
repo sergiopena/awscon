@@ -64,6 +64,14 @@ def get_instances(args):
     if args.name != None:
         r = re.compile('.* - .* - .* - .*'+args.name+'.*')
         ec2_instances = filter(r.match, ec2_instances)
+    
+    if args.instanceId != None:
+        r = re.compile('.*'+args.instanceId+'.* - .* - .* - .*')
+        ec2_instances = filter(r.match, ec2_instances)
+    
+    if args.address != None:
+        r = re.compile('.* - .*'+args.address+'.* - .*')
+        ec2_instances = filter(r.match, ec2_instances)
 
     return ec2_instances
 
@@ -78,27 +86,34 @@ def main():
     parser.add_argument('--region', '-r', default='eu-west-1',
                         help='Region to retrieve instances from')
 
-# TODO
-#    parser.add_argument('--instance', '-i', required=False,
-#                        help='Filter by instance id by applying .*arg.*')
+    parser.add_argument('--instanceId', '-i', required=False,
+                        help='Filter by instance id by applying .*arg.*')
 
     parser.add_argument('--name', '-n', required=False,
                         help='Filter by instance name by applying .*arg.*')
+    
+    parser.add_argument('--address', '-a', required=False,
+                        help='IP address of the instance')
 
     args = parser.parse_args()
+    instances = get_instances(args)
+
+    if len(instances) == 0:
+        print("Your search criteria did not match any running instance.\n"+
+              "Exiting...")
+        sys.exit(1)
 
     prompt_list = [
       {
         'type': 'list',
         'name': 'instance',
         'message': 'Select instance to connect',
-        'choices': get_instances(args)
+        'choices': instances
       }]
-
+    
     answers = prompt(prompt_list, style=custom_style_2)
     instanceId = answers['instance'].split(' - ')[0]
     subprocess.call(["aws", "ssm", "start-session", "--target", instanceId])
-
 
 if __name__ == '__main__':
     main()
