@@ -1,4 +1,8 @@
-from boto3 import client
+import os
+
+import boto3
+from botocore import credentials
+import botocore.session
 from botocore.exceptions import ClientError, ProfileNotFound, NoRegionError, EndpointConnectionError
 
 from PyInquirer import style_from_dict, Token, prompt
@@ -9,11 +13,26 @@ import subprocess
 import argparse
 import re
 
+# Use the credential cache path used by awscli
+AWS_CREDENTIAL_CACHE_DIR = os.path.join(os.path.expanduser('~'),'.aws/cli/cache')
+
+def build_aws_client(*args, **kwargs):
+        """Build an AWS client using the awscli credential cache."""
+
+        # Create a session with the credential cache
+        session = botocore.session.get_session()
+        provider = session.get_component('credential_provider').get_provider('assume-role')
+        provider.cache = credentials.JSONFileCache(AWS_CREDENTIAL_CACHE_DIR)
+
+        # Create boto3 client from session
+        return boto3.Session(botocore_session=session).client(*args, **kwargs)
+
 def get_instances(args):
     ec2_instances = []
 
     try:
-        ec2client = client('ec2',region_name=args.region)
+        ec2client = build_aws_client('ec2', region_name=args.region)
+
         response = ec2client.describe_instances()
     except ProfileNotFound as e:
         print e.message
