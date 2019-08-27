@@ -112,8 +112,9 @@ def main():
       }]
     
     answers = prompt(prompt_list, style=custom_style_2)
-    instanceId = answers['instance'].split(' - ')[0]
-    subprocess.call(["aws", "ssm", "start-session", "--target", instanceId])
+    if answers:
+        instanceId = answers['instance'].split(' - ')[0]
+        subprocess.call(["aws", "ssm", "start-session", "--target", instanceId])
 
 if __name__ == '__main__':
     main()
