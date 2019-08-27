@@ -28,6 +28,10 @@ def get_instances(args):
         print e.message
         print "Check your region name, seems it's not reachable"
         sys.exit(1)
+    except KeyboardInterrupt:
+        # in case of MFA the user can type CTRL-C instead of typing its code
+        # just exit nicely
+        sys.exit(0)
     except:
         print "Unexpected error:", sys.exc_info()[0]
         raise
