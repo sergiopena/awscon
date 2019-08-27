@@ -16,20 +16,20 @@ def get_instances(args):
         ec2client = client('ec2',region_name=args.region)
         response = ec2client.describe_instances()
     except ProfileNotFound as e:
-        print e.message
+        print(e.message)
         print("Make sure you defined and env var " +
               "AWS_PROFILE pointing to your credentials")
         sys.exit(1)
     except NoRegionError as e:
-        print e.message
-        print "You need to define a region in your profile"
+        print(e.message)
+        print("You need to define a region in your profile")
         sys.exit(1)
     except EndpointConnectionError as e:
-        print e.message
-        print "Check your region name, seems it's not reachable"
+        print(e.message)
+        print("Check your region name, seems it's not reachable")
         sys.exit(1)
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        print("Unexpected error:", sys.exc_info()[0])
         raise
 
     for ins in response['Reservations']:
@@ -50,10 +50,10 @@ def get_instances(args):
         else:
             publicAddress = ''
 
-    	if 'PrivateIpAddress' in instance:
-	        privateAddress = instance['PrivateIpAddress']
-    	else:
-	        privateAddress = ''
+        if 'PrivateIpAddress' in instance:
+            privateAddress = instance['PrivateIpAddress']
+        else:
+            privateAddress = ''
 
         entry = "%s - %s - %s - %s " % (instanceId,
                                         '{:<15}'.format(publicAddress),
@@ -99,8 +99,8 @@ def main():
     instances = get_instances(args)
 
     if len(instances) == 0:
-        print("Your search criteria did not match any running instance.\n"+
-              "Exiting...")
+        print("Your search criteria did not match any running instance.")
+        print("Exiting...")
         sys.exit(1)
 
     prompt_list = [
