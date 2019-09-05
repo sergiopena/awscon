@@ -1,10 +1,5 @@
 from boto3 import client
-from botocore.exceptions import (
-    ClientError,
-    ProfileNotFound,
-    NoRegionError,
-    EndpointConnectionError,
-)
+from botocore.exceptions import ClientError, ProfileNotFound, NoRegionError, EndpointConnectionError
 
 from PyInquirer import style_from_dict, Token, prompt
 from examples import custom_style_2
@@ -14,19 +9,16 @@ import subprocess
 import argparse
 import re
 
-
 def get_instances(args):
     ec2_instances = []
 
     try:
-        ec2client = client("ec2", region_name=args.region)
+        ec2client = client('ec2',region_name=args.region)
         response = ec2client.describe_instances()
     except ProfileNotFound as e:
         print(e.message)
-        print(
-            "Make sure you defined and env var "
-            + "AWS_PROFILE pointing to your credentials"
-        )
+        print("Make sure you defined and env var " +
+              "AWS_PROFILE pointing to your credentials")
         sys.exit(1)
     except NoRegionError as e:
         print(e.message)
@@ -40,47 +32,45 @@ def get_instances(args):
         print("Unexpected error:", sys.exc_info()[0])
         raise
 
-    for ins in response["Reservations"]:
-        instance = ins["Instances"][0]
-        instanceId = instance["InstanceId"]
+    for ins in response['Reservations']:
+        instance = ins['Instances'][0]
+        instanceId = instance['InstanceId']
 
-        if "Tags" in instance:
-            name = [k["Value"] for k in instance["Tags"] if k["Key"] == "Name"]
+        if 'Tags' in instance:
+            name = [k['Value'] for k in instance['Tags'] if k['Key'] == 'Name']
             if name == []:
-                name = ""
+                name = ''
             else:
                 name = name[0]
         else:
-            name = ""
+            name = ''
 
-        if "PublicIpAddress" in instance:
-            publicAddress = instance["PublicIpAddress"]
+        if 'PublicIpAddress' in instance:
+            publicAddress = instance['PublicIpAddress']
         else:
-            publicAddress = ""
+            publicAddress = ''
 
-        if "PrivateIpAddress" in instance:
-            privateAddress = instance["PrivateIpAddress"]
+        if 'PrivateIpAddress' in instance:
+            privateAddress = instance['PrivateIpAddress']
         else:
-            privateAddress = ""
+            privateAddress = ''
 
-        entry = "%s - %s - %s - %s " % (
-            instanceId,
-            "{:<15}".format(publicAddress),
-            "{:<15}".format(privateAddress),
-            name,
-        )
+        entry = "%s - %s - %s - %s " % (instanceId,
+                                        '{:<15}'.format(publicAddress),
+                                        '{:<15}'.format(privateAddress),
+                                        name)
         ec2_instances.append(entry)
 
     if args.name != None:
-        r = re.compile(".* - .* - .* - .*" + args.name + ".*")
+        r = re.compile('.* - .* - .* - .*'+args.name+'.*')
         ec2_instances = filter(r.match, ec2_instances)
-
+    
     if args.instanceId != None:
-        r = re.compile(".*" + args.instanceId + ".* - .* - .* - .*")
+        r = re.compile('.*'+args.instanceId+'.* - .* - .* - .*')
         ec2_instances = filter(r.match, ec2_instances)
-
+    
     if args.address != None:
-        r = re.compile(".* - .*" + args.address + ".* - .*")
+        r = re.compile('.* - .*'+args.address+'.* - .*')
         ec2_instances = filter(r.match, ec2_instances)
 
     return ec2_instances
@@ -89,31 +79,21 @@ def get_instances(args):
 def main():
 
     parser = argparse.ArgumentParser(
-        description="AWS SSM console manager",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description='AWS SSM console manager',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    parser.add_argument(
-        "--region", "-r", default="eu-west-1", help="Region to retrieve instances from"
-    )
+    parser.add_argument('--region', '-r', default='eu-west-1',
+                        help='Region to retrieve instances from')
 
-    parser.add_argument(
-        "--instanceId",
-        "-i",
-        required=False,
-        help="Filter by instance id by applying .*arg.*",
-    )
+    parser.add_argument('--instanceId', '-i', required=False,
+                        help='Filter by instance id by applying .*arg.*')
 
-    parser.add_argument(
-        "--name",
-        "-n",
-        required=False,
-        help="Filter by instance name by applying .*arg.*",
-    )
-
-    parser.add_argument(
-        "--address", "-a", required=False, help="IP address of the instance"
-    )
+    parser.add_argument('--name', '-n', required=False,
+                        help='Filter by instance name by applying .*arg.*')
+    
+    parser.add_argument('--address', '-a', required=False,
+                        help='IP address of the instance')
 
     args = parser.parse_args()
     instances = get_instances(args)
@@ -124,18 +104,16 @@ def main():
         sys.exit(1)
 
     prompt_list = [
-        {
-            "type": "list",
-            "name": "instance",
-            "message": "Select instance to connect",
-            "choices": instances,
-        }
-    ]
-
+      {
+        'type': 'list',
+        'name': 'instance',
+        'message': 'Select instance to connect',
+        'choices': instances
+      }]
+    
     answers = prompt(prompt_list, style=custom_style_2)
-    instanceId = answers["instance"].split(" - ")[0]
+    instanceId = answers['instance'].split(' - ')[0]
     subprocess.call(["aws", "ssm", "start-session", "--target", instanceId])
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
