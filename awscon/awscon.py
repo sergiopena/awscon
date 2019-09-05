@@ -9,7 +9,7 @@ from PyInquirer import style_from_dict, Token, prompt
 from examples import custom_style_2
 
 import sys
-import subprocess
+import os
 import argparse
 import re
 
@@ -137,7 +137,7 @@ def main():
     answers = prompt(prompt_list, style=custom_style_2)
     if answers:
         instanceId = answers['instance'].split(' - ')[0]
-        subprocess.call(["aws", "ssm", "start-session", "--target", instanceId])
+        os.execlp("aws", "aws", "ssm", "start-session", "--target", instanceId)
 
 if __name__ == '__main__':
     main()
