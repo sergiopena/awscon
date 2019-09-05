@@ -36,7 +36,7 @@ def get_instances(args):
         print(e.message)
         print("Check your region name, seems it's not reachable")
         sys.exit(1)
-    except Exception:
+    except:
         print("Unexpected error:", sys.exc_info()[0])
         raise
 
@@ -71,15 +71,15 @@ def get_instances(args):
         )
         ec2_instances.append(entry)
 
-    if args.name:
+    if args.name != None:
         r = re.compile(".* - .* - .* - .*" + args.name + ".*")
         ec2_instances = filter(r.match, ec2_instances)
 
-    if args.instanceId:
+    if args.instanceId != None:
         r = re.compile(".*" + args.instanceId + ".* - .* - .* - .*")
         ec2_instances = filter(r.match, ec2_instances)
 
-    if args.address:
+    if args.address != None:
         r = re.compile(".* - .*" + args.address + ".* - .*")
         ec2_instances = filter(r.match, ec2_instances)
 
@@ -94,10 +94,7 @@ def main():
     )
 
     parser.add_argument(
-        "--region",
-        "-r",
-        default="eu-west-1",
-        help="Region to retrieve instances from"
+        "--region", "-r", default="eu-west-1", help="Region to retrieve instances from"
     )
 
     parser.add_argument(
