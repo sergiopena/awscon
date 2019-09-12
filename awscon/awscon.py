@@ -89,10 +89,16 @@ def get_instances(args):
         else:
             privateAddress = ""
 
-        entry = "%s - %s - %s - %s " % (
+        if "LaunchTime" in instance:
+            launchtime = instance['LaunchTime'].strftime('%D %T')
+        else:
+            launchtime = ""
+
+        entry = "%s - %s - %s - %s - %s " % (
             instanceId,
             "{:<15}".format(publicAddress),
             "{:<15}".format(privateAddress),
+            "{:<17}".format(launchtime),
             name,
         )
         ec2_instances.append(entry)
