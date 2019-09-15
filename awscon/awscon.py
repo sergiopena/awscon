@@ -85,26 +85,22 @@ def get_instances(args):
             if launchtime:
                 launchtime = launchtime.strftime("%D %T")
 
-            entry = "%s - %s - %s - %s - %s " % (
-                instanceId,
-                "{:<15}".format(publicAddress),
-                "{:<15}".format(privateAddress),
-                "{:<17}".format(launchtime),
-                name,
+            # Apply user filters, if any
+            if args.name and args.name not in name:
+                continue
+            if (
+                args.address
+                and args.address not in publicAddress
+                and args.address not in privateAddress
+            ):
+                continue
+            if args.instanceId and args.instanceId not in instanceId:
+                continue
+
+            entry = "{} - {:<15} - {:<15} - {:<17} - {} ".format(
+                instanceId, publicAddress, privateAddress, launchtime, name
             )
             ec2_instances.append(entry)
-
-    if args.name:
-        r = re.compile(".* - .* - .* - .*" + args.name + ".*")
-        ec2_instances = filter(r.match, ec2_instances)
-
-    if args.instanceId:
-        r = re.compile(".*" + args.instanceId + ".* - .* - .* - .*")
-        ec2_instances = filter(r.match, ec2_instances)
-
-    if args.address:
-        r = re.compile(".* - .*" + args.address + ".* - .*")
-        ec2_instances = filter(r.match, ec2_instances)
 
     return ec2_instances
 
