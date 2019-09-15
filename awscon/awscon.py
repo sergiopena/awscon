@@ -66,42 +66,33 @@ def get_instances(args):
         print("Unexpected error:", sys.exc_info()[0])
         raise
 
-    for ins in response["Reservations"]:
-        instance = ins["Instances"][0]
-        instanceId = instance["InstanceId"]
+    for reservation in response["Reservations"]:
+        for instance in reservation["Instances"]:
 
-        if "Tags" in instance:
-            name = [k["Value"] for k in instance["Tags"] if k["Key"] == "Name"]
-            if name == []:
-                name = ""
-            else:
-                name = name[0]
-        else:
+            instanceId = instance["InstanceId"]
+
             name = ""
+            tags = instance.get("Tags")
+            if tags:
+                for name in (t["Value"] for t in tags if t["Key"] == "Name"):
+                    pass
 
-        if "PublicIpAddress" in instance:
-            publicAddress = instance["PublicIpAddress"]
-        else:
-            publicAddress = ""
+            publicAddress = instance.get("PublicIpAddress", "")
 
-        if "PrivateIpAddress" in instance:
-            privateAddress = instance["PrivateIpAddress"]
-        else:
-            privateAddress = ""
+            privateAddress = instance.get("PrivateIpAddress", "")
 
-        if "LaunchTime" in instance:
-            launchtime = instance['LaunchTime'].strftime('%D %T')
-        else:
-            launchtime = ""
+            launchtime = instance.get("LaunchTime")
+            if launchtime:
+                launchtime = launchtime.strftime("%D %T")
 
-        entry = "%s - %s - %s - %s - %s " % (
-            instanceId,
-            "{:<15}".format(publicAddress),
-            "{:<15}".format(privateAddress),
-            "{:<17}".format(launchtime),
-            name,
-        )
-        ec2_instances.append(entry)
+            entry = "%s - %s - %s - %s - %s " % (
+                instanceId,
+                "{:<15}".format(publicAddress),
+                "{:<15}".format(privateAddress),
+                "{:<17}".format(launchtime),
+                name,
+            )
+            ec2_instances.append(entry)
 
     if args.name:
         r = re.compile(".* - .* - .* - .*" + args.name + ".*")
