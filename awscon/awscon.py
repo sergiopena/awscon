@@ -15,6 +15,7 @@ import sys
 import os
 import argparse
 import re
+import json
 
 # Use the credential cache path used by awscli
 AWS_CREDENTIAL_CACHE_DIR = os.path.join(
@@ -147,11 +148,26 @@ def main():
     )
 
     parser.add_argument(
-        "--address", "-a", required=False, help="IP address of the instance"
+        "--address",
+        "-a",
+        required=False,
+        help="IP address of the instance"
+    )
+
+    parser.add_argument(
+        "--dryrun",
+        "-d",
+        action="store_true",
+        required=False,
+        help="Dry run, do not connec to the instance just list matchs"
     )
 
     args = parser.parse_args()
     instances = get_instances(args)
+
+    if args.dryrun:
+        print(json.dumps(instances, indent=4))
+        return
 
     if len(instances) == 0:
         print(
