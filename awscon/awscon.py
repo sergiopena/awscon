@@ -156,7 +156,7 @@ def main():
         print(json.dumps(instances, indent=4))
         return
 
-    if len(instances) == 0:
+    if len(list(instances)) == 0:
         print(
             "Your search criteria did not match any running instance.\n"
             + "Exiting..."
