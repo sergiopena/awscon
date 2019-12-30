@@ -1,4 +1,4 @@
-PyInquirer
+pick
 boto3
 twine
 pycodestyle

@@ -8,8 +8,7 @@ from botocore.exceptions import (
     EndpointConnectionError,
 )
 
-from PyInquirer import style_from_dict, Token, prompt
-from examples import custom_style_2
+from pick import pick
 
 import sys
 import os
@@ -59,10 +58,6 @@ def get_instances(args):
         print(e.message)
         print("Check your region name, seems it's not reachable")
         sys.exit(1)
-    except KeyboardInterrupt:
-        # in case of MFA the user can type CTRL-C instead of typing its code
-        # just exit nicely
-        sys.exit(0)
     except Exception:
         print("Unexpected error:", sys.exc_info()[0])
         raise
@@ -163,20 +158,13 @@ def main():
         )
         sys.exit(1)
 
-    prompt_list = [
-        {
-            "type": "list",
-            "name": "instance",
-            "message": "Select instance to connect",
-            "choices": instances,
-        }
-    ]
-
-    answers = prompt(prompt_list, style=custom_style_2)
-    if answers:
-        instanceId = answers["instance"].split(" - ")[0]
-        os.execlp("aws", "aws", "ssm", "start-session", "--target", instanceId)
+    option, _ = pick(instances, "Select instance to connect")
+    instanceId = option.split(" - ")[0]
+    os.execlp("aws", "aws", "ssm", "start-session", "--target", instanceId)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit()
