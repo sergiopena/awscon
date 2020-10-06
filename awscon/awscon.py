@@ -8,13 +8,13 @@ from botocore.exceptions import (
     EndpointConnectionError,
 )
 
-from pick import pick
 
 import sys
 import os
 import argparse
 import re
 import json
+from pyfzf.pyfzf import FzfPrompt
 
 # Use the credential cache path used by awscli
 AWS_CREDENTIAL_CACHE_DIR = os.path.join(
@@ -158,8 +158,9 @@ def main():
         )
         sys.exit(1)
 
-    option, _ = pick(instances, "Select instance to connect")
-    instanceId = option.split(" - ")[0]
+    fzf = FzfPrompt()
+    option = fzf.prompt(instances)
+    instanceId = option[0].split(" - ")[0]
     os.execlp("aws", "aws", "ssm", "start-session", "--target", instanceId)
 
 
