@@ -27,7 +27,7 @@ setuptools.setup(
     install_requires=[
         'boto3>=1.9.154',
         'botocore>=1.12.154',
-        'PyInquirer>=1.0.3'
+        'pyfzf',
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
