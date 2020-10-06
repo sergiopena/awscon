@@ -8,7 +8,7 @@ def read(fname):
 
 setuptools.setup(
     name="awscon",
-    version="0.0.11",
+    version="0.0.12",
     author="Sergio Pena",
     author_email="isergiopena@gmail.com",
     description=("Wrapper that displays all available EC2 instances " +
