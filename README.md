@@ -15,7 +15,8 @@ You can also leave out the `--profile PROFILE_NAME` param to set your `default` 
 Refer to this doc for more information
 https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
-Recommend to use [awsp](https://github.com/johnnyopao/awsp) to manage AWS profiles 
+This code now has an external dependency on fzf please install it using your preferred package manager.
+
 ## Setup
 
 ### pip
