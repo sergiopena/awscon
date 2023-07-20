@@ -1,5 +1,17 @@
 #!/bin/bash
 
+pip install -r requirements-ci.txt
+
 set -e
 
-source ./script/test
+echo "Linting check"
+black --check .
+echo "Strict type check"
+mypy awscon/*.py --ignore-missing-imports
+echo "Code security check"
+#bandit awscon/*.py
+echo "Dependencies security check"
+safety check -r awscon/requirements.txt
+echo "Checks finished"
+
+#source ./script/test
