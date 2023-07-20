@@ -17,9 +17,7 @@ import json
 from pyfzf.pyfzf import FzfPrompt
 
 # Use the credential cache path used by awscli
-AWS_CREDENTIAL_CACHE_DIR = os.path.join(
-    os.path.expanduser("~"), ".aws/cli/cache"
-)
+AWS_CREDENTIAL_CACHE_DIR = os.path.join(os.path.expanduser("~"), ".aws/cli/cache")
 
 
 def build_aws_client(*args, **kwargs):
@@ -27,9 +25,7 @@ def build_aws_client(*args, **kwargs):
 
     # Create a session with the credential cache
     session = botocore.session.get_session()
-    provider = session.get_component("credential_provider").get_provider(
-        "assume-role"
-    )
+    provider = session.get_component("credential_provider").get_provider("assume-role")
     provider.cache = credentials.JSONFileCache(AWS_CREDENTIAL_CACHE_DIR)
 
     # Create boto3 client from session
@@ -64,7 +60,6 @@ def get_instances(args):
 
     for reservation in response["Reservations"]:
         for instance in reservation["Instances"]:
-
             instanceId = instance["InstanceId"]
 
             name = ""
@@ -102,7 +97,6 @@ def get_instances(args):
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="AWS SSM console manager",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -130,10 +124,7 @@ def main():
     )
 
     parser.add_argument(
-        "--address",
-        "-a",
-        required=False,
-        help="IP address of the instance"
+        "--address", "-a", required=False, help="IP address of the instance"
     )
 
     parser.add_argument(
@@ -141,7 +132,7 @@ def main():
         "-d",
         action="store_true",
         required=False,
-        help="Dry run, do not connec to the instance just list matchs"
+        help="Dry run, do not connec to the instance just list matchs",
     )
 
     args = parser.parse_args()
@@ -153,8 +144,7 @@ def main():
 
     if len(list(instances)) == 0:
         print(
-            "Your search criteria did not match any running instance.\n"
-            + "Exiting..."
+            "Your search criteria did not match any running instance.\n" + "Exiting..."
         )
         sys.exit(1)
 
