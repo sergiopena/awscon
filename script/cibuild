@@ -14,4 +14,3 @@ echo "Dependencies security check"
 safety check -r awscon/requirements.txt
 echo "Checks finished"
 
-#source ./script/test
