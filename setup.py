@@ -11,23 +11,21 @@ setuptools.setup(
     version="0.0.13",
     author="Sergio Pena",
     author_email="isergiopena@gmail.com",
-    description=("Wrapper that displays all available EC2 instances " +
-                 "and launchs an SSM console session for the selected one"),
+    description=(
+        "Wrapper that displays all available EC2 instances "
+        + "and launchs an SSM console session for the selected one"
+    ),
     license="BSD",
     keywords="aws ec2 ssm console ssh",
     url="https://www.github.com/sergiopena/awscon",
     packages=setuptools.find_packages(),
-    long_description=read('README.md'),
-    long_description_content_type='text/markdown',
-    entry_points={
-        'console_scripts': [
-            'awscon = awscon.awscon:main'
-        ]
-    },
+    long_description=read("README.md"),
+    long_description_content_type="text/markdown",
+    entry_points={"console_scripts": ["awscon = awscon.awscon:main"]},
     install_requires=[
-        'boto3>=1.9.154',
-        'botocore>=1.12.154',
-        'pyfzf',
+        "boto3>=1.9.154",
+        "botocore>=1.12.154",
+        "pyfzf",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
